@@ -14,7 +14,7 @@ for instance in instances['Reservations']:
 '''
 # takes snapshot of every 'in-use volume'
 volumes = ec2.describe_volumes(Filters=[{
-    'Name': 'state',
+    'Name': 'status',
     'Values': ['in-use']
 }])
 
