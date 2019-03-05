@@ -1,0 +1,42 @@
+# Cloud formation template to create a instance with UserData to create a snapshot of the created instance.
+
+Description: "Bijay ec2 ebs create"
+Resources:
+  BijayEC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: "ami-0ac019f4fcb7cb7e6"
+      Tags:
+        Name: "bijay-ec2-cloudformation"
+        Owner: "bijaypathak55@gmail.com"
+        Environment: "Test"
+      InstanceType: t2.micro
+      SecurityGroups:
+        - "InternSecurityGroup"
+        - !Ref SSHSecurityGroup
+      KeyName: "New-bijay-ec2"
+      UserData:
+        Fn::Base64:
+          !Sub |
+            #!/bin/bash
+            apt update
+            apt install python-pip -y
+            apt install git -y
+            pip install virtualenv
+            virtualenv my-env
+            cd /home/ubuntu/my-env
+            source bin/activate
+            pip install boto3
+            git clone https://github.com/beejay777/automate_ebs.git 
+            cd automate_ebs
+            python boto_ebs.py
+
+  SSHSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable SSH access via port 22
+      SecurityGroupIngress: 
+        - CidrIp: 0.0.0.0/0
+          FromPort: 22
+          IpProtocol: tcp
+          ToPort: 22
