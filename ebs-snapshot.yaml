@@ -5,26 +5,23 @@ Resources:
   BijayEC2Instance:
     Type: AWS::EC2::Instance
     Properties:
-      ImageId: "ami-0ac019f4fcb7cb7e6"
-      Tags:
-        Name: "bijay-ec2-cloudformation"
-        Owner: "bijaypathak55@gmail.com"
-        Environment: "Test"
+      ImageId: ami-0ac019f4fcb7cb7e6
       InstanceType: t2.micro
       SecurityGroups:
-        - "InternSecurityGroup"
         - !Ref SSHSecurityGroup
-      KeyName: "New-bijay-ec2"
+      KeyName: bijay-educate
+      IamInstanceProfile: !Ref ONewProfile
       UserData:
         Fn::Base64:
           !Sub |
             #!/bin/bash
+            sudo su
             apt update
             apt install python-pip -y
             apt install git -y
             pip install virtualenv
             virtualenv my-env
-            cd /home/ubuntu/my-env
+            cd my-env
             source bin/activate
             pip install boto3
             git clone https://github.com/beejay777/automate_ebs.git 
@@ -40,3 +37,28 @@ Resources:
           FromPort: 22
           IpProtocol: tcp
           ToPort: 22
+
+
+
+  ONewProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties: 
+      Roles:
+        - asdf 
+      InstanceProfileName: OInstanceProfile
+
+
+  EC2Role:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+              - ec2.amazonaws.com
+            Action:
+            - sts:AssumeRole
+  
+  
