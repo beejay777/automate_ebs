@@ -1,21 +1,15 @@
 import boto3
+import requests
+
+response = requests.get('http://169.254.169.254/latest/meta-data/instance-id')
+instance_id = response.text
 
 ec2 = boto3.client('ec2', region_name='us-east-1')
-'''
-instances = ec2.describe_instance(Filters=[{
-    'Name': 'instance-state-name',
-    'Values': ['running']
-}])
 
-instance.Reservations.Instances.InstanceId
-
-for instance in instances['Reservations']:
-    instanceid = instance['Instances'][0]
-'''
 # takes snapshot of every 'in-use volume'
 volumes = ec2.describe_volumes(Filters=[{
-    'Name': 'status',
-    'Values': ['in-use']
+    'Name': 'attachment.instance-id',
+    'Values': [instance_id]
 }])
 
 
