@@ -15,10 +15,11 @@ volumes = ec2.describe_volumes(Filters=[{
 
 for volume in volumes['Volumes']:
     volume_id = volume['VolumeId']
-    response = ec2.create_snapshot(
-        Description='Snapshot through cloudformation.',
-        VolumeId=volume_id
-    )
+    for i in range(33):
+        response = ec2.create_snapshot(
+            Description='Snapshot through cloudformation.',
+            VolumeId=volume_id
+        )
 print(volumes)
 
 
